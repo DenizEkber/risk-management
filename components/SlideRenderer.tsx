@@ -1,5 +1,5 @@
 import React from 'react';
-import { SlideData, SlideType } from '../types';
+import { SlideData, SlideType, RiskRegisterItem, KPITableItem } from '../types';
 import { RiskMatrix, StrategyChart } from './Visuals';
 import { ShieldAlert, Search, Calculator, FileText, Activity, Smartphone, PenTool, CheckCircle, XCircle, ArrowRight } from 'lucide-react';
 
@@ -175,22 +175,47 @@ export const SlideRenderer: React.FC<SlideRendererProps> = ({ slide }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {slide.tableData!.slice(1).map((row, i) => (
-                      <tr key={i} className="border-b border-navy-700/50 hover:bg-navy-700/50 transition">
-                         <td className="p-4 font-mono text-gray-400">{row.id}</td>
-                         <td className="p-4 font-medium text-gray-100">{row.risk}</td>
-                         <td className="p-4 text-blue-300">{row.prob}</td>
-                         <td className={`p-4 font-bold ${row.impact.includes('High') || row.impact.includes('Critical') ? 'text-red-400' : 'text-yellow-400'}`}>{row.impact}</td>
-                         <td className="p-4">{row.priority}</td>
-                         <td className="p-4 text-sm">{row.strategy}</td>
-                         <td className="p-4 text-sm text-gray-400">{row.owner}</td>
-                         <td className="p-4">
-                           <span className={`px-2 py-1 rounded-full text-xs font-bold border ${row.status === 'Active' || row.status === 'Open' ? 'bg-green-900/50 text-green-300 border-green-700' : 'bg-gray-800 text-gray-300 border-gray-600'}`}>
-                             {row.status}
-                           </span>
-                         </td>
-                      </tr>
-                    ))}
+                    {slide.tableData!.slice(1).map((row, i) => {
+                      const isRiskRegister = 'risk' in row;
+                      const rowData = row as RiskRegisterItem | KPITableItem;
+                      const values = Object.values(rowData);
+                      
+                      return (
+                        <tr key={i} className="border-b border-navy-700/50 hover:bg-navy-700/50 transition">
+                          {values.map((cell, j) => {
+                            const isStatus = cell === rowData.status;
+                            const isImpact = isRiskRegister && j === 3; // impact column index
+                            const isId = isRiskRegister && j === 0; // id column index
+                            
+                            let cellClass = "p-4";
+                            if (isId) cellClass += " font-mono text-gray-400";
+                            else if (isImpact && typeof cell === 'string') {
+                              cellClass += ` font-bold ${cell.includes('High') || cell.includes('Critical') ? 'text-red-400' : 'text-yellow-400'}`;
+                            } else if (isStatus) {
+                              cellClass = "p-4";
+                            } else if (isRiskRegister && j === 1) {
+                              cellClass += " font-medium text-gray-100";
+                            } else if (isRiskRegister && j === 2) {
+                              cellClass += " text-blue-300";
+                            } else if (isRiskRegister && (j === 5 || j === 6)) {
+                              cellClass += " text-sm text-gray-400";
+                            }
+                            
+                            return (
+                              <td key={j} className={cellClass}>
+                                {isStatus ? (
+                                  <span className={`px-2 py-1 rounded-full text-xs font-bold border ${cell === 'Active' || cell === 'Open' || (typeof cell === 'string' && cell.includes('✅')) ? 'bg-green-900/50 text-green-300 border-green-700' : (typeof cell === 'string' && cell.includes('❌')) ? 'bg-red-900/50 text-red-300 border-red-700' : (typeof cell === 'string' && cell.includes('⚠️')) ? 'bg-yellow-900/50 text-yellow-300 border-yellow-700' : 'bg-gray-800 text-gray-300 border-gray-600'}`}>
+                                    {cell}
+                                  </span>
+                                ) : (
+                                  cell
+                                )}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
              </div>
