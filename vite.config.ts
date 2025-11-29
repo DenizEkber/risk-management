@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   // 'base' GitHub repository adınıza uyğun olmalıdır
   // https://github.com/DenizEkber/Risk-management -> /Risk-management/
-  base: '/Risk-management/', 
+  base: '/risk-management/', 
   build: {
     outDir: 'dist',
   }
