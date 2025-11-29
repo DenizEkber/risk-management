@@ -27,13 +27,6 @@ export interface RiskRegisterItem {
   status: string;
 }
 
-export interface KPITableItem {
-  metric: string;
-  target: string;
-  actual: string;
-  status: string;
-}
-
 export interface ComparisonItem {
   title: string;
   subtitle?: string;
@@ -48,7 +41,7 @@ export interface SlideData {
   subtitle?: string;
   content?: string[];
   chartData?: ChartDataPoint[];
-  tableData?: RiskRegisterItem[] | KPITableItem[];
+  tableData?: RiskRegisterItem[];
   visualConfig?: any;
   section?: string;
   comparisonData?: {
