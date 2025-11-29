@@ -17,14 +17,18 @@ export interface ChartDataPoint {
 }
 
 export interface RiskRegisterItem {
-  id: string;
-  risk: string;
-  prob: string;
-  impact: string;
-  priority: string;
-  strategy: string;
-  owner: string;
+  id?: string;
+  risk?: string;
+  prob?: string;
+  impact?: string;
+  priority?: string;
+  strategy?: string;
+  owner?: string;
   status: string;
+  // KPI Dashboard fields
+  metric?: string;
+  target?: string;
+  actual?: string;
 }
 
 export interface ComparisonItem {

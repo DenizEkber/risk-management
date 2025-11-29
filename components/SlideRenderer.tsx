@@ -175,22 +175,49 @@ export const SlideRenderer: React.FC<SlideRendererProps> = ({ slide }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {slide.tableData!.slice(1).map((row, i) => (
-                      <tr key={i} className="border-b border-navy-700/50 hover:bg-navy-700/50 transition">
-                         <td className="p-4 font-mono text-gray-400">{row.id}</td>
-                         <td className="p-4 font-medium text-gray-100">{row.risk}</td>
-                         <td className="p-4 text-blue-300">{row.prob}</td>
-                         <td className={`p-4 font-bold ${row.impact.includes('High') || row.impact.includes('Critical') ? 'text-red-400' : 'text-yellow-400'}`}>{row.impact}</td>
-                         <td className="p-4">{row.priority}</td>
-                         <td className="p-4 text-sm">{row.strategy}</td>
-                         <td className="p-4 text-sm text-gray-400">{row.owner}</td>
-                         <td className="p-4">
-                           <span className={`px-2 py-1 rounded-full text-xs font-bold border ${row.status === 'Active' || row.status === 'Open' ? 'bg-green-900/50 text-green-300 border-green-700' : 'bg-gray-800 text-gray-300 border-gray-600'}`}>
-                             {row.status}
-                           </span>
-                         </td>
-                      </tr>
-                    ))}
+                    {slide.tableData!.slice(1).map((row, i) => {
+                      // Check if this is a KPI dashboard row (has metric field)
+                      if (row.metric) {
+                        return (
+                          <tr key={i} className="border-b border-navy-700/50 hover:bg-navy-700/50 transition">
+                            <td className="p-4 font-medium text-gray-100">{row.metric}</td>
+                            <td className="p-4 text-blue-300">{row.target}</td>
+                            <td className="p-4 text-green-300">{row.actual}</td>
+                            <td className="p-4">
+                              <span className={`px-2 py-1 rounded-full text-xs font-bold border ${
+                                row.status?.includes('✅') ? 'bg-green-900/50 text-green-300 border-green-700' : 
+                                row.status?.includes('⚠️') ? 'bg-yellow-900/50 text-yellow-300 border-yellow-700' :
+                                row.status?.includes('❌') ? 'bg-red-900/50 text-red-300 border-red-700' :
+                                'bg-gray-800 text-gray-300 border-gray-600'
+                              }`}>
+                                {row.status}
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      }
+                      // Risk Register format
+                      return (
+                        <tr key={i} className="border-b border-navy-700/50 hover:bg-navy-700/50 transition">
+                          <td className="p-4 font-mono text-gray-400">{row.id || ''}</td>
+                          <td className="p-4 font-medium text-gray-100">{row.risk || ''}</td>
+                          <td className="p-4 text-blue-300">{row.prob || ''}</td>
+                          <td className={`p-4 font-bold ${
+                            row.impact?.includes('High') || row.impact?.includes('Critical') ? 'text-red-400' : 'text-yellow-400'
+                          }`}>{row.impact || ''}</td>
+                          <td className="p-4">{row.priority || ''}</td>
+                          <td className="p-4 text-sm">{row.strategy || ''}</td>
+                          <td className="p-4 text-sm text-gray-400">{row.owner || ''}</td>
+                          <td className="p-4">
+                            <span className={`px-2 py-1 rounded-full text-xs font-bold border ${
+                              row.status === 'Active' || row.status === 'Open' ? 'bg-green-900/50 text-green-300 border-green-700' : 'bg-gray-800 text-gray-300 border-gray-600'
+                            }`}>
+                              {row.status}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
              </div>
